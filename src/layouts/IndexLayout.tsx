@@ -4,7 +4,7 @@ import Navbutton from "@/components/Navbutton";
 import { Outlet } from "react-router-dom";
 import { FiCalendar, FiList, FiBookOpen, FiBox } from "react-icons/fi";
 
-export default function IndexPage() {
+export default function IndexLayout() {
   return (
     <div className="flex h-screen w-full justify-center bg-gray-300 p-4">
       <main className="grid h-full w-full max-w-2xl grid-rows-[1fr,5rem] gap-4">
