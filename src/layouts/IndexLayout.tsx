@@ -13,7 +13,7 @@ export default function IndexLayout() {
         </Card>
         <Card>
           <Navbar>
-            <Navbutton name="Flow" icon={<FiCalendar />} href="/flow" />
+            <Navbutton name="Flow" icon={<FiCalendar />} href="/" />
             <Navbutton name="List" icon={<FiList />} href="/list" />
             <Navbutton name="Recipes" icon={<FiBookOpen />} href="/recipes" />
             <Navbutton name="Stock" icon={<FiBox />} href="/stock" />
