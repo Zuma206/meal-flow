@@ -1,0 +1,11 @@
+# Spacefile Docs: https://go.deta.dev/docs/spacefile/v0
+v: 0
+micros:
+  - name: vite
+    src: ./
+    engine: static
+    primary: true
+    commands:
+      - npm run dev
+    serve: dist
+    dev: npm run vite
