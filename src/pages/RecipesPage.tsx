@@ -2,20 +2,13 @@ import Alert from "@/components/Alert";
 import Button from "@/components/Button";
 import Loader from "@/components/Loader";
 import RecipeButton from "@/components/RecipeButton";
-import db from "@/lib";
-import { useStock } from "@/lib/queries";
-import { useQuery } from "@tanstack/react-query";
+import { useRecipies, useStock } from "@/lib/queries";
 import { FiInbox, FiPlus } from "react-icons/fi";
 
 export default function RecipesPage() {
   const stock = useStock();
 
-  const recipes = useQuery({
-    queryKey: ["recipes"],
-    queryFn() {
-      return db.recipes.fetch(undefined, { autoPaginate: true });
-    },
-  });
+  const recipes = useRecipies();
 
   return (
     <>

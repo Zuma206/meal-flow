@@ -9,3 +9,12 @@ export function useStock() {
     },
   });
 }
+
+export function useRecipies() {
+  return useQuery({
+    queryKey: ["recipes"],
+    queryFn() {
+      return db.recipes.fetch(undefined, { autoPaginate: true });
+    },
+  });
+}

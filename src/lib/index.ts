@@ -41,9 +41,16 @@ export const recipeSchema = z.object({
 export type Recipe = z.infer<typeof recipeSchema>;
 export type RecipeRequirement = z.infer<typeof recipeRequirementSchema>;
 
+export const daySchema = z.object({
+  foreignKey: text(),
+  completed: z.boolean(),
+});
+export type Day = z.infer<typeof daySchema>;
+
 const db = {
   ingredients: sdk.TypedBase("ingredients", ingredientSchema),
   recipes: sdk.TypedBase("recipes", recipeSchema),
+  days: sdk.TypedBase("days", daySchema),
 };
 
 export function select<T extends RecordType>(
