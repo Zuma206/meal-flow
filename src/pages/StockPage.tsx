@@ -59,6 +59,7 @@ export default function StockPage() {
               type="number"
               value={stockCount}
               onChange={onNumberChange(setStockCount)}
+              step={0.1}
             />
             <InputField
               placeholder="Unit(s)"
