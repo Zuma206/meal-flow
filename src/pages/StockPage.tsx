@@ -1,6 +1,7 @@
 import FormButton from "@/components/FormButton";
 import Ingredient from "@/components/Ingredient";
 import InputField from "@/components/InputField";
+import Loader from "@/components/Loader";
 import MutationForm from "@/components/MutationForm";
 import Title from "@/components/Title";
 import db from "@/lib";
@@ -64,7 +65,7 @@ export default function StockPage() {
           </div>
           <FormButton icon={<FiPlus />}>Add New Item</FormButton>
         </MutationForm>
-        {stock.isLoading && "Loading..."}
+        {stock.isLoading && <Loader />}
         {stock.isSuccess && (
           <div className="overflow-y-scroll">
             <table className="w-full">

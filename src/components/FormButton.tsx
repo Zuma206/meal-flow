@@ -12,7 +12,8 @@ export default function FormButton(props: Props) {
 
   return (
     <Button {...props}>
-      {mutation?.isLoading ? <FiLoader /> : props.icon} {props.children}
+      {mutation?.isLoading ? <FiLoader className="animate-spin" /> : props.icon}{" "}
+      {props.children}
     </Button>
   );
 }
