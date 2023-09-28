@@ -13,6 +13,7 @@ import NewRecipePage from "./pages/NewRecipePage";
 import RecipesLayout from "./layouts/RecipesLayout";
 import ViewRecipePage from "./pages/ViewRecipePage";
 import FlowPage from "./pages/FlowPage";
+import ListPage from "./pages/ListPage";
 
 const router = createBrowserRouter([
   {
@@ -29,7 +30,7 @@ const router = createBrowserRouter([
       },
       {
         path: "list",
-        element: <></>,
+        element: <ListPage />,
       },
       {
         path: "recipes",
