@@ -8,7 +8,8 @@ import MutationForm from "@/components/MutationForm";
 import Title from "@/components/Title";
 import db from "@/lib";
 import { onNumberChange, onStringChange } from "@/lib/binding";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useStock } from "@/lib/queries";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { FiInbox, FiPlus } from "react-icons/fi";
 import { ZodError } from "zod";
@@ -20,12 +21,7 @@ export default function StockPage() {
 
   const queryClient = useQueryClient();
 
-  const stock = useQuery({
-    queryKey: ["stock"],
-    queryFn() {
-      return db.ingredients.fetch(undefined, { autoPaginate: true });
-    },
-  });
+  const stock = useStock();
 
   const addStock = useMutation({
     async mutationFn() {
