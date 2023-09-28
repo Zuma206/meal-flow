@@ -44,7 +44,8 @@ export default function IngredientResults(props: Props) {
       )
       .map((ingredient) => (
         <Button key={ingredient.key} onClick={addIngredient(ingredient.key)}>
-          <FiPlus /> {props.ingredientCount || 0} {ingredient.name}
+          <FiPlus /> {props.ingredientCount || 0} {ingredient.units} of{" "}
+          {ingredient.name}
         </Button>
       ))
   );
