@@ -1,3 +1,5 @@
+import Alert from "@/components/Alert";
+import ErrorMessage from "@/components/ErrorMessage";
 import FormButton from "@/components/FormButton";
 import Ingredient from "@/components/Ingredient";
 import InputField from "@/components/InputField";
@@ -8,7 +10,8 @@ import db from "@/lib";
 import { onNumberChange, onStringChange } from "@/lib/binding";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { FiPlus } from "react-icons/fi";
+import { FiInbox, FiPlus } from "react-icons/fi";
+import { ZodError } from "zod";
 
 export default function StockPage() {
   const [stockName, setStockName] = useState("");
@@ -38,6 +41,7 @@ export default function StockPage() {
       setStockCount("");
       setStockUnits("");
     },
+    useErrorBoundary: (err) => !(err instanceof ZodError),
   });
 
   return (
@@ -66,10 +70,15 @@ export default function StockPage() {
               onChange={onStringChange(setStockUnits)}
             />
           </div>
+          {addStock.isError && (
+            <ErrorMessage>
+              Please make sure all required fields are present
+            </ErrorMessage>
+          )}
           <FormButton icon={<FiPlus />}>Add New Item</FormButton>
         </MutationForm>
         {stock.isLoading && <Loader />}
-        {stock.isSuccess && (
+        {stock.isSuccess && stock.data.count > 0 ? (
           <div className="overflow-y-scroll">
             <table className="w-full">
               <tbody>
@@ -79,6 +88,8 @@ export default function StockPage() {
               </tbody>
             </table>
           </div>
+        ) : (
+          <Alert message="No ingredients here yet" icon={FiInbox} />
         )}
       </div>
     </>
