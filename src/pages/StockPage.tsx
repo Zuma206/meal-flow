@@ -34,6 +34,9 @@ export default function StockPage() {
     },
     onSuccess() {
       queryClient.invalidateQueries({ queryKey: ["stock"] });
+      setStockName("");
+      setStockCount("");
+      setStockUnits("");
     },
   });
 
