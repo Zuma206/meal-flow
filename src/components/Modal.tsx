@@ -18,11 +18,11 @@ export default function Modal(props: PropsWithChildren) {
       {modal != undefined && (
         <div className="absolute left-0 top-0 z-20 flex h-full w-full items-center justify-center bg-black bg-opacity-20">
           <MutationForm
-            className="flex h-full max-h-56 w-full max-w-md flex-col items-center justify-center gap-4 rounded-lg bg-white outline outline-1 outline-gray-400"
+            className="flex flex-col items-center justify-center gap-4 rounded-lg bg-white px-20 py-10 outline outline-1 outline-gray-400"
             action={modal?.action}
           >
             {!modal.prompt || typeof modal.prompt == "string" ? (
-              <h1 className="text-4xl font-black">
+              <h1 className="max-w-sm text-center text-3xl font-black">
                 {modal.prompt ?? "Are you sure?"}
               </h1>
             ) : (
