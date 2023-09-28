@@ -11,6 +11,7 @@ import {
 import "./index.css";
 import NewRecipePage from "./pages/NewRecipePage";
 import RecipesLayout from "./layouts/RecipesLayout";
+import ViewRecipePage from "./pages/ViewRecipePage";
 
 const router = createBrowserRouter([
   {
@@ -35,6 +36,7 @@ const router = createBrowserRouter([
         children: [
           { path: "", element: <RecipesPage /> },
           { path: "new", element: <NewRecipePage /> },
+          { path: ":key", element: <ViewRecipePage /> },
         ],
       },
       {
