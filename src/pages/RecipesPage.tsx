@@ -1,10 +1,11 @@
+import Alert from "@/components/Alert";
 import Button from "@/components/Button";
 import Loader from "@/components/Loader";
 import RecipeButton from "@/components/RecipeButton";
 import db from "@/lib";
 import { useStock } from "@/lib/queries";
 import { useQuery } from "@tanstack/react-query";
-import { FiPlus } from "react-icons/fi";
+import { FiInbox, FiPlus } from "react-icons/fi";
 
 export default function RecipesPage() {
   const stock = useStock();
@@ -26,19 +27,23 @@ export default function RecipesPage() {
           </Button>
         </div>
         {(recipes.isLoading || stock.isLoading) && <Loader />}
-        {recipes.isSuccess && stock.isSuccess && (
-          <div className="flex items-start justify-center overflow-x-scroll">
-            <div className="grid w-full max-w-lg grid-cols-1 gap-3 sm:grid-cols-2">
-              {recipes.data.items.map((recipe) => (
-                <RecipeButton
-                  key={recipe.key}
-                  recipe={recipe}
-                  stock={stock.data.items}
-                />
-              ))}
+        {recipes.isSuccess &&
+          stock.isSuccess &&
+          (recipes.data.count > 0 ? (
+            <div className="flex items-start justify-center overflow-x-scroll">
+              <div className="grid w-full max-w-lg grid-cols-1 gap-3 sm:grid-cols-2">
+                {recipes.data.items.map((recipe) => (
+                  <RecipeButton
+                    key={recipe.key}
+                    recipe={recipe}
+                    stock={stock.data.items}
+                  />
+                ))}
+              </div>
             </div>
-          </div>
-        )}
+          ) : (
+            <Alert icon={FiInbox} message="No recipes here yet" />
+          ))}
       </div>
     </>
   );
