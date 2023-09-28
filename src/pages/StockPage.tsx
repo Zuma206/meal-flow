@@ -67,11 +67,7 @@ export default function StockPage() {
               onChange={onStringChange(setStockUnits)}
             />
           </div>
-          {addStock.isError && (
-            <ErrorMessage>
-              Please make sure all required fields are present
-            </ErrorMessage>
-          )}
+          {addStock.isError && <ErrorMessage />}
           <FormButton icon={<FiPlus />}>Add New Item</FormButton>
         </MutationForm>
         {stock.isLoading && <Loader />}

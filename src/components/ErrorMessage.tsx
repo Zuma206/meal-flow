@@ -1,5 +1,11 @@
-import { PropsWithChildren } from "react";
+type Props = {
+  text?: string;
+};
 
-export default function ErrorMessage(props: PropsWithChildren) {
-  return <p className="text-red-500">{props.children}</p>;
+export default function ErrorMessage(props: Props) {
+  return (
+    <p className="text-red-500">
+      {props.text ?? "Please make sure all required fields are present"}
+    </p>
+  );
 }

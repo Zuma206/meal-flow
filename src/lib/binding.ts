@@ -1,7 +1,9 @@
 import { ChangeEvent, Dispatch, SetStateAction } from "react";
 
+export type HTMLInputField = HTMLInputElement | HTMLTextAreaElement;
+
 export function onStringChange(set: Dispatch<SetStateAction<string>>) {
-  return function stringChangeHandler(e: ChangeEvent<HTMLInputElement>) {
+  return function stringChangeHandler(e: ChangeEvent<HTMLInputField>) {
     set(e.target.value);
   };
 }

@@ -29,17 +29,17 @@ export const ingredientSchema = z.object({
 });
 export type Ingredient = z.infer<typeof ingredientSchema>;
 
+const recipeRequirementSchema = z.object({
+  foreignKey: text(),
+  count: number(),
+});
 export const recipeSchema = z.object({
   name: text(),
-  requirements: z.array(
-    z.object({
-      foreignKey: text(),
-      count: number(),
-    }),
-  ),
+  requirements: z.array(recipeRequirementSchema),
   notes: area(),
 });
 export type Recipe = z.infer<typeof recipeSchema>;
+export type RecipeRequirement = z.infer<typeof recipeRequirementSchema>;
 
 const db = {
   ingredients: sdk.TypedBase("ingredients", ingredientSchema),
