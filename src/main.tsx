@@ -12,6 +12,7 @@ import "./index.css";
 import NewRecipePage from "./pages/NewRecipePage";
 import RecipesLayout from "./layouts/RecipesLayout";
 import ViewRecipePage from "./pages/ViewRecipePage";
+import FlowPage from "./pages/FlowPage";
 
 const router = createBrowserRouter([
   {
@@ -24,7 +25,7 @@ const router = createBrowserRouter([
       },
       {
         path: "flow",
-        element: <></>,
+        element: <FlowPage />,
       },
       {
         path: "list",
