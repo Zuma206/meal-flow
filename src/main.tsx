@@ -1,13 +1,16 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import "./index.css";
+import IndexLayout from "./layouts/IndexLayout";
+import StockPage from "./pages/StockPage";
+import RecipesPage from "./pages/RecipesPage";
 import {
   Navigate,
   RouterProvider,
   createBrowserRouter,
 } from "react-router-dom";
-import IndexLayout from "./layouts/IndexLayout";
-import StockPage from "./pages/StockPage";
+import "./index.css";
+import NewRecipePage from "./pages/NewRecipePage";
+import RecipesLayout from "./layouts/RecipesLayout";
 
 const router = createBrowserRouter([
   {
@@ -28,7 +31,11 @@ const router = createBrowserRouter([
       },
       {
         path: "recipes",
-        element: <></>,
+        element: <RecipesLayout />,
+        children: [
+          { path: "", element: <RecipesPage /> },
+          { path: "new", element: <NewRecipePage /> },
+        ],
       },
       {
         path: "stock",
