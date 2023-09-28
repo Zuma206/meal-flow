@@ -8,9 +8,8 @@ import Modal from "@/components/Modal";
 
 const queryClient = new QueryClient({
   defaultOptions: {
-    queries: {
-      useErrorBoundary: true,
-    },
+    queries: { useErrorBoundary: true },
+    mutations: { useErrorBoundary: true },
   },
 });
 

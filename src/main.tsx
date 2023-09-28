@@ -14,6 +14,7 @@ import RecipesLayout from "./layouts/RecipesLayout";
 import ViewRecipePage from "./pages/ViewRecipePage";
 import FlowPage from "./pages/FlowPage";
 import ListPage from "./pages/ListPage";
+import ErrorPage from "./pages/ErrorPage";
 
 const router = createBrowserRouter([
   {
@@ -21,29 +22,34 @@ const router = createBrowserRouter([
     element: <IndexLayout />,
     children: [
       {
-        path: "/",
-        element: <Navigate to="flow" />,
-      },
-      {
-        path: "flow",
-        element: <FlowPage />,
-      },
-      {
-        path: "list",
-        element: <ListPage />,
-      },
-      {
-        path: "recipes",
-        element: <RecipesLayout />,
+        errorElement: <ErrorPage />,
         children: [
-          { path: "", element: <RecipesPage /> },
-          { path: "new", element: <NewRecipePage /> },
-          { path: ":key", element: <ViewRecipePage /> },
+          {
+            path: "/",
+            element: <Navigate to="flow" />,
+          },
+          {
+            path: "flow",
+            element: <FlowPage />,
+          },
+          {
+            path: "list",
+            element: <ListPage />,
+          },
+          {
+            path: "recipes",
+            element: <RecipesLayout />,
+            children: [
+              { path: "", element: <RecipesPage /> },
+              { path: "new", element: <NewRecipePage /> },
+              { path: ":key", element: <ViewRecipePage /> },
+            ],
+          },
+          {
+            path: "stock",
+            element: <StockPage />,
+          },
         ],
-      },
-      {
-        path: "stock",
-        element: <StockPage />,
       },
     ],
   },
