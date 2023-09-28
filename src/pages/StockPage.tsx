@@ -2,26 +2,24 @@ import Button from "@/components/Button";
 import Ingredient from "@/components/Ingredient";
 import InputField from "@/components/InputField";
 import Title from "@/components/Title";
-import { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
+import db from "@/lib";
+import { onNumberChange, onStringChange } from "@/lib/binding";
+import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
+
+function getStock() {
+  return db.ingredients.fetch(undefined, { autoPaginate: true });
+}
 
 export default function StockPage() {
   const [stockName, setStockName] = useState("");
   const [stockCount, setStockCount] = useState<number | string>("");
   const [stockUnits, setStockUnits] = useState("");
 
-  function getStringHandler(setter: Dispatch<SetStateAction<string>>) {
-    return function stringChangeHandler(e: ChangeEvent<HTMLInputElement>) {
-      setter(e.target.value);
-    };
-  }
-
-  function getNumberHandler(setter: Dispatch<SetStateAction<number | string>>) {
-    return function numberChangeHandler(e: ChangeEvent<HTMLInputElement>) {
-      const parsedFloat = parseFloat(e.target.value);
-      if (isNaN(parsedFloat)) setter("");
-      else setter(parsedFloat);
-    };
-  }
+  const stock = useQuery({
+    queryKey: ["stock"],
+    queryFn: getStock,
+  });
 
   return (
     <>
@@ -32,36 +30,34 @@ export default function StockPage() {
             <InputField
               placeholder="Ingredient name"
               value={stockName}
-              onChange={getStringHandler(setStockName)}
+              onChange={onStringChange(setStockName)}
             />
             <InputField
               placeholder="Amount in stock"
               type="number"
               value={stockCount}
-              onChange={getNumberHandler(setStockCount)}
+              onChange={onNumberChange(setStockCount)}
             />
             <InputField
               placeholder="Unit(s)"
               value={stockUnits}
-              onChange={getStringHandler(setStockUnits)}
+              onChange={onStringChange(setStockUnits)}
             />
           </div>
           <Button>Add New Item</Button>
         </form>
-        <div className="overflow-y-scroll">
-          <table className="w-full">
-            <tbody>
-              <Ingredient />
-              <Ingredient />
-              <Ingredient />
-              <Ingredient />
-              <Ingredient />
-              <Ingredient />
-              <Ingredient />
-              <Ingredient />
-            </tbody>
-          </table>
-        </div>
+        {stock.isLoading && "Loading..."}
+        {stock.isSuccess && (
+          <div className="overflow-y-scroll">
+            <table className="w-full">
+              <tbody>
+                {stock.data.items.map((ingredient) => (
+                  <Ingredient ingredient={ingredient} />
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
     </>
   );
