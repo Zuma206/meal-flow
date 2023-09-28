@@ -14,7 +14,7 @@ export default function Ingredient(props: Props) {
       <TableData>{props.ingredient.count}</TableData>
       <TableData>{props.ingredient.units}</TableData>
       <TableData>
-        <IngredientOpts />
+        <IngredientOpts ingredient={props.ingredient} />
       </TableData>
     </tr>
   );
