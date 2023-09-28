@@ -19,7 +19,7 @@ export const limits = {
 
 const text = () => z.string().min(limits.text.min).max(limits.text.max);
 // const area = () => z.string().min(limits.area.min).max(limits.area.max);
-const number = () => z.string().min(limits.number.min).max(limits.number.max);
+const number = () => z.number().min(limits.number.min).max(limits.number.max);
 
 export const ingredientSchema = z.object({
   name: text(),
