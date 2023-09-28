@@ -1,4 +1,5 @@
 import { Deta, z } from "base-safe";
+import { OutputRecord, RecordType } from "base-safe/dist/types";
 
 const sdk = Deta();
 
@@ -18,7 +19,7 @@ export const limits = {
 };
 
 const text = () => z.string().min(limits.text.min).max(limits.text.max);
-// const area = () => z.string().min(limits.area.min).max(limits.area.max);
+const area = () => z.string().min(limits.area.min).max(limits.area.max);
 const number = () => z.number().min(limits.number.min).max(limits.number.max);
 
 export const ingredientSchema = z.object({
@@ -28,8 +29,28 @@ export const ingredientSchema = z.object({
 });
 export type Ingredient = z.infer<typeof ingredientSchema>;
 
+export const recipeSchema = z.object({
+  name: text(),
+  requirements: z.array(
+    z.object({
+      foreignKey: text(),
+      count: number(),
+    }),
+  ),
+  notes: area(),
+});
+export type Recipe = z.infer<typeof recipeSchema>;
+
 const db = {
   ingredients: sdk.TypedBase("ingredients", ingredientSchema),
+  recipes: sdk.TypedBase("recipes", recipeSchema),
 };
+
+export function select<T extends RecordType>(
+  key: string,
+  records: OutputRecord<T>[],
+) {
+  return records.find((record) => record.key == key);
+}
 
 export default db;

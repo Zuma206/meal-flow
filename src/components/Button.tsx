@@ -3,7 +3,7 @@ import { ButtonHTMLAttributes, MouseEvent } from "react";
 import { useNavigate } from "react-router-dom";
 
 type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
-  href?: string;
+  to?: string;
 };
 
 export default function Button(props: Props) {
@@ -11,7 +11,7 @@ export default function Button(props: Props) {
   const navigate = useNavigate();
 
   function onClick(e: MouseEvent<HTMLButtonElement>) {
-    if (props.href) navigate(props.href);
+    if (props.to) navigate(props.to);
     else if (props.onClick) props.onClick(e);
   }
 
