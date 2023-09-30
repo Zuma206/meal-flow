@@ -3,65 +3,57 @@ import MutationForm from "./MutationForm";
 import FormButton from "./FormButton";
 import { FiCheck, FiX } from "react-icons/fi";
 import Button from "./Button";
-import { MouseEvent, ReactNode, useCallback, useEffect, useState } from "react";
+import {
+  Dispatch,
+  MouseEvent,
+  ReactNode,
+  SetStateAction,
+  useEffect,
+} from "react";
 
-type Options = {
+type Props = {
   action?: Mutation;
   prompt?: ReactNode;
   yes?: string;
   no?: string;
+  show?: boolean;
+  setShow?: Dispatch<SetStateAction<boolean>>;
 };
 
-export function useModal(options: Options) {
-  const [showModal, setShowModal] = useState(false);
+export default function Modal(props: Props) {
+  useEffect(() => {
+    if (!props.action?.isSuccess || !props.setShow) return;
+    props.setShow(false);
+  }, [props]);
 
-  function handleCancel(e: MouseEvent<HTMLButtonElement>) {
+  function handleCancel(e: MouseEvent) {
     e.preventDefault();
-    setShowModal(false);
+    if (!props.setShow) return;
+    props.setShow(false);
   }
 
-  useEffect(() => {
-    if (options.action?.isSuccess === true) {
-      setShowModal(false);
-    }
-  }, [options.action?.isSuccess]);
-
-  return {
-    Modal: useCallback(() => {
-      return (
-        showModal && (
-          <div className="absolute left-0 top-0 z-20 flex h-full w-full items-center justify-center bg-black bg-opacity-20">
-            <MutationForm
-              className="flex flex-col items-center justify-center gap-4 rounded-lg bg-white px-20 py-10 outline outline-1 outline-gray-400"
-              action={options.action}
-            >
-              {!options.prompt || typeof options.prompt == "string" ? (
-                <h1 className="max-w-sm text-center text-3xl font-black">
-                  {options.prompt ?? "Are you sure?"}
-                </h1>
-              ) : (
-                options.prompt
-              )}
-              <div className="flex gap-2">
-                <FormButton icon={<FiCheck />}>
-                  {options.yes ?? "Yes"}
-                </FormButton>
-                <Button onClick={handleCancel}>
-                  <FiX /> {options.no ?? "No"}
-                </Button>
-              </div>
-            </MutationForm>
+  return (
+    props.show && (
+      <div className="absolute left-0 top-0 z-20 flex h-full w-full items-center justify-center bg-black bg-opacity-20">
+        <MutationForm
+          className="flex flex-col items-center justify-center gap-4 rounded-lg bg-white px-20 py-10 outline outline-1 outline-gray-400"
+          action={props.action}
+        >
+          {!props.prompt || typeof props.prompt == "string" ? (
+            <h1 className="max-w-sm text-center text-3xl font-black">
+              {props.prompt ?? "Are you sure?"}
+            </h1>
+          ) : (
+            props.prompt
+          )}
+          <div className="flex gap-2">
+            <FormButton icon={<FiCheck />}>{props.yes ?? "Yes"}</FormButton>
+            <Button onClick={handleCancel}>
+              <FiX /> {props.no ?? "No"}
+            </Button>
           </div>
-        )
-      );
-    }, [options, showModal]),
-
-    open() {
-      setShowModal(true);
-    },
-
-    close() {
-      setShowModal(false);
-    },
-  };
+        </MutationForm>
+      </div>
+    )
+  );
 }

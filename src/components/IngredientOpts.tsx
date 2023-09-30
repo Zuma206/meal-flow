@@ -3,7 +3,8 @@ import Button from "./Button";
 import { OutputRecord } from "base-safe/dist/types";
 import db, { Ingredient } from "@/lib";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useModal } from "./Modal";
+import Modal from "./Modal";
+import { useState } from "react";
 
 type Props = {
   ingredient: OutputRecord<Ingredient>;
@@ -22,18 +23,20 @@ export default function IngredientOpts(props: Props) {
     },
   });
 
-  const deleteModal = useModal({
-    action: deleteIngredient,
-    prompt: `Are you sure you want to permenantly delete '${props.ingredient.name}'?`,
-  });
+  const [deleteModal, setDeleteModal] = useState(false);
 
   return (
     <>
-      <deleteModal.Modal />
+      <Modal
+        action={deleteIngredient}
+        prompt={`Are you sure you want to permenantly delete '${props.ingredient.name}'?`}
+        show={deleteModal}
+        setShow={setDeleteModal}
+      />
       <Button>
         <FiEdit />
       </Button>
-      <Button onClick={deleteModal.open}>
+      <Button onClick={() => setDeleteModal(true)}>
         <FiTrash />
       </Button>
     </>

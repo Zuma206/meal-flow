@@ -68,7 +68,11 @@ export default function ListPage() {
         {shoppingList.isSuccess && listState && (
           <ul className="flex h-full w-full list-disc flex-col gap-2 overflow-y-scroll px-5 py-1">
             {listState.map((requirement) => (
-              <ShoppingListItem key={requirement.key} item={requirement} />
+              <ShoppingListItem
+                key={requirement.key}
+                item={requirement}
+                setListState={setListState}
+              />
             ))}
           </ul>
         )}
