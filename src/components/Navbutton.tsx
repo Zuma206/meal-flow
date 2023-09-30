@@ -14,7 +14,7 @@ export default function Navbutton(props: Props) {
   return (
     <div className="flex flex-col items-center">
       <Link
-        className="flex flex-col items-center transition-opacity hover:opacity-75"
+        className="flex flex-col items-center transition hover:opacity-50"
         to={props.href ?? "#"}
       >
         <span className="text-xl">{props.icon}</span>
