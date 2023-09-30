@@ -19,16 +19,19 @@ type Props = {
 };
 
 export default function ShoppingListItem(props: Props) {
-  const [count, setCount] = useState(props.item.count);
-  const [editedCount, setEditedCount] = useState<string | number>(
-    props.item.count,
-  );
+  const [count, setCount] = useState<string | number>(props.item.count);
   const [modal, setModal] = useState(false);
 
   const editMutation = useMutation({
     async mutationFn() {
-      if (typeof editedCount == "string") return;
-      setCount(editedCount);
+      if (typeof count == "string") return;
+      props.setListState((list) => {
+        if (!list) return list;
+        return list.map((listItem) => {
+          if (listItem.key != props.item.key) return listItem;
+          return { ...listItem, count };
+        });
+      });
     },
   });
 
@@ -38,8 +41,8 @@ export default function ShoppingListItem(props: Props) {
         action={editMutation}
         prompt={
           <InputField
-            value={editedCount}
-            onChange={onNumberChange(setEditedCount)}
+            value={count}
+            onChange={onNumberChange(setCount)}
             step={0.1}
             type="number"
           />
@@ -49,7 +52,7 @@ export default function ShoppingListItem(props: Props) {
         setShow={setModal}
       />
       <span className="flex gap-2 text-lg">
-        {count} {props.item.units} of {props.item.name}
+        {props.item.count} {props.item.units} of {props.item.name}
         <Button onClick={() => setModal(true)}>
           <FiEdit />
         </Button>
