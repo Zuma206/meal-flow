@@ -7,7 +7,6 @@ import { FiInbox, FiPlus } from "react-icons/fi";
 
 export default function RecipesPage() {
   const stock = useStock();
-
   const recipes = useRecipies();
 
   return (

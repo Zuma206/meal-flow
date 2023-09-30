@@ -3,7 +3,7 @@ import Button from "./Button";
 import { OutputRecord } from "base-safe/dist/types";
 import db, { Ingredient } from "@/lib";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useModal } from "@/lib/modal-context";
+import { useModal } from "./Modal";
 
 type Props = {
   ingredient: OutputRecord<Ingredient>;
@@ -19,13 +19,17 @@ export default function IngredientOpts(props: Props) {
     },
     onSuccess() {
       queryClient.invalidateQueries({ queryKey: ["stock"] });
-      deleteModal.close();
     },
   });
-  const deleteModal = useModal(deleteIngredient);
+
+  const deleteModal = useModal({
+    action: deleteIngredient,
+    prompt: `Are you sure you want to permenantly delete '${props.ingredient.name}'?`,
+  });
 
   return (
     <>
+      <deleteModal.Modal />
       <Button>
         <FiEdit />
       </Button>
