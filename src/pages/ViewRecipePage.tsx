@@ -29,7 +29,9 @@ export default function ViewRecipePage() {
       await db.recipes.delete(key);
     },
     onSuccess() {
-      queryClient.invalidateQueries({ queryKey: ["recipes"] });
+      queryClient.invalidateQueries({
+        predicate: ({ queryKey }) => queryKey.includes("recipes"),
+      });
       navigate("../");
     },
   });
@@ -56,7 +58,10 @@ export default function ViewRecipePage() {
       );
     },
     onSuccess() {
-      queryClient.invalidateQueries({ queryKey: ["stock", "days"] });
+      queryClient.invalidateQueries({
+        predicate: ({ queryKey }) =>
+          queryKey.includes("stock") || queryKey.includes("days"),
+      });
       navigate("/flow");
     },
   });

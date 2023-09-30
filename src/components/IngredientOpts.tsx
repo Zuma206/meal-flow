@@ -15,11 +15,12 @@ export default function IngredientOpts(props: Props) {
 
   const deleteIngredient = useMutation({
     async mutationFn() {
-      console.log("Deleting...");
       await db.ingredients.delete(props.ingredient.key);
     },
     onSuccess() {
-      queryClient.invalidateQueries({ queryKey: ["stock"] });
+      queryClient.invalidateQueries({
+        predicate: ({ queryKey }) => queryKey.includes("stock"),
+      });
     },
   });
 
