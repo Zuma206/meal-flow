@@ -7,7 +7,7 @@ import { useStock } from "@/lib/queries";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { FiInbox, FiMinus, FiTrash } from "react-icons/fi";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 
 export default function ViewRecipePage() {
   const { key } = useParams();
@@ -15,7 +15,7 @@ export default function ViewRecipePage() {
   const stock = useStock();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-
+  const [searchParams] = useSearchParams();
   const recipe = useQuery({
     queryKey: [key],
     queryFn() {
@@ -34,15 +34,49 @@ export default function ViewRecipePage() {
     },
   });
 
-  const [modal, setModal] = useState(false);
+  const subtractFromStock = useMutation({
+    async mutationFn() {
+      if (!recipe.data?.requirements) return;
+      for (let i = 0; i < recipe.data.requirements.length; i++) {
+        const requirement = recipe.data.requirements[i];
+        await db.ingredients.update(
+          {
+            count: db.ingredients.util.increment(-requirement.count),
+          },
+          requirement.foreignKey,
+        );
+      }
+      const day = searchParams.get("day");
+      if (!day) return;
+      await db.days.update(
+        {
+          completed: true,
+        },
+        day,
+      );
+    },
+    onSuccess() {
+      queryClient.invalidateQueries({ queryKey: ["stock", "days"] });
+      navigate("/flow");
+    },
+  });
+
+  const [deleteModal, setDeleteModal] = useState(false);
+  const [subtractModal, setSubtractModal] = useState(false);
 
   return (
     <>
       <Modal
         action={deleteRecipe}
         prompt={`Are you sure you want to permanently delete '${recipe.data?.name}'?`}
-        show={modal}
-        setShow={setModal}
+        show={deleteModal}
+        setShow={setDeleteModal}
+      />
+      <Modal
+        action={subtractFromStock}
+        prompt="Are you sure you want to subtract these ingredients from your stock?"
+        show={subtractModal}
+        setShow={setSubtractModal}
       />
       {(recipe.isLoading || stock.isLoading) && <Loader />}
       {recipe.data && stock.isSuccess && (
@@ -55,7 +89,7 @@ export default function ViewRecipePage() {
                 stock.data.items,
               );
               return ingredient ? (
-                <li>
+                <li key={requirement.foreignKey}>
                   {requirement.count} {ingredient.units} of {ingredient.name}
                 </li>
               ) : null;
@@ -63,10 +97,10 @@ export default function ViewRecipePage() {
           </ul>
           <p>{recipe.data.notes}</p>
           <div className="flex flex-col items-start gap-2 py-2">
-            <Button>
+            <Button onClick={() => setSubtractModal(true)}>
               <FiMinus /> Subtract from Stock
             </Button>
-            <Button onClick={() => setModal(true)}>
+            <Button onClick={() => setDeleteModal(true)}>
               <FiTrash /> Delete Recipe
             </Button>
           </div>
