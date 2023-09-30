@@ -6,6 +6,6 @@ micros:
     engine: static
     primary: true
     commands:
-      - npm run dev
+      - npm run build
     serve: dist
     dev: npm run vite
