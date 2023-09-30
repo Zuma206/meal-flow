@@ -9,3 +9,4 @@ micros:
       - npm run build
     serve: dist
     dev: npm run vite
+icon: public/icon.png
