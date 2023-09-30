@@ -7,7 +7,8 @@ import { useDays, useRecipies } from "@/lib/queries";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { FiFilePlus } from "react-icons/fi";
 import { shuffle } from "d3-array";
-import { useModal } from "@/components/Modal";
+import Modal from "@/components/Modal";
+import { useState } from "react";
 
 const dayKeys = [
   "Monday",
@@ -46,20 +47,21 @@ export default function FlowPage() {
     },
   });
 
-  const generateModal = useModal({
-    action: generateDays,
-    prompt:
-      "Are you sure you want to overwrite the current flow with a new one?",
-  });
+  const [modal, setModal] = useState(false);
 
   return (
     <>
-      <generateModal.Modal />
+      <Modal
+        action={generateDays}
+        prompt="Are you sure you want to overwrite the current flow with a new one?"
+        show={modal}
+        setShow={setModal}
+      />
       <Title>Flow</Title>
       {(days.isLoading || recipes.isLoading) && <Loader />}
       {days.isSuccess && recipes.isSuccess && (
         <>
-          <Button onClick={generateModal.open}>
+          <Button onClick={() => setModal(true)}>
             <FiFilePlus /> Generate Flow
           </Button>
           <div className="flex justify-center">

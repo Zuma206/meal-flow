@@ -1,9 +1,10 @@
 import Button from "@/components/Button";
 import Loader from "@/components/Loader";
-import { useModal } from "@/components/Modal";
+import Modal from "@/components/Modal";
 import db, { select } from "@/lib";
 import { useStock } from "@/lib/queries";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
 import { FiMinus, FiTrash } from "react-icons/fi";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -32,14 +33,16 @@ export default function ViewRecipePage() {
     },
   });
 
-  const deleteModal = useModal({
-    action: deleteRecipe,
-    prompt: `Are you sure you want to permanently delete '${recipe.data?.name}'?`,
-  });
+  const [modal, setModal] = useState(false);
 
   return (
     <>
-      <deleteModal.Modal />
+      <Modal
+        action={deleteRecipe}
+        prompt={`Are you sure you want to permanently delete '${recipe.data?.name}'?`}
+        show={modal}
+        setShow={setModal}
+      />
       {(recipe.isLoading || stock.isLoading) && <Loader />}
       {recipe.data && stock.isSuccess && (
         <div className="flex flex-col gap-4">
@@ -62,7 +65,7 @@ export default function ViewRecipePage() {
             <Button>
               <FiMinus /> Subtract from Stock
             </Button>
-            <Button onClick={deleteModal.open}>
+            <Button onClick={() => setModal(true)}>
               <FiTrash /> Delete Recipe
             </Button>
           </div>
