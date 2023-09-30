@@ -24,6 +24,7 @@ export default function Modal(props: Props) {
   useEffect(() => {
     if (!props.action?.isSuccess || !props.setShow) return;
     props.setShow(false);
+    props.action.reset();
   }, [props]);
 
   function handleCancel(e: MouseEvent) {
