@@ -26,7 +26,7 @@ export default function RecipeButton(props: Props) {
 
   return (
     <Link
-      className="rounded-md bg-gray-100 p-2 shadow-md"
+      className="rounded-md bg-gray-100 p-2 shadow-md transition hover:brightness-90 active:brightness-75"
       to={props.recipe.key}
     >
       <h1 className="text-2xl font-bold">{props.recipe.name}</h1>
