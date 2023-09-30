@@ -18,3 +18,12 @@ export function useRecipies() {
     },
   });
 }
+
+export function useDays() {
+  return useQuery({
+    queryKey: ["days"],
+    queryFn() {
+      return db.days.fetch(undefined, { autoPaginate: true });
+    },
+  });
+}

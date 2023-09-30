@@ -3,8 +3,8 @@ import Day from "@/components/Day";
 import Loader from "@/components/Loader";
 import Title from "@/components/Title";
 import db, { select } from "@/lib";
-import { useRecipies } from "@/lib/queries";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useDays, useRecipies } from "@/lib/queries";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { FiFilePlus } from "react-icons/fi";
 import { shuffle } from "d3-array";
 import { useModal } from "@/components/Modal";
@@ -20,12 +20,7 @@ const dayKeys = [
 ] as const;
 
 export default function FlowPage() {
-  const days = useQuery({
-    queryKey: ["days"],
-    queryFn() {
-      return db.days.fetch(undefined, { autoPaginate: true });
-    },
-  });
+  const days = useDays();
 
   const recipes = useRecipies();
   const queryClient = useQueryClient();
