@@ -25,6 +25,7 @@ export default function ListPage() {
       if (!isSuccess) throw new Error();
       let shoppingList: ShoppingListReq[] = [];
       days.data.items.forEach((day) => {
+        if (day.completed) return;
         const recipe = select(day.foreignKey, recipes.data.items);
         if (!recipe) return;
         recipe.requirements.forEach((recipeReq) => {
