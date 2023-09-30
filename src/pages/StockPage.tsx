@@ -32,7 +32,9 @@ export default function StockPage() {
       });
     },
     onSuccess() {
-      queryClient.invalidateQueries({ queryKey: ["stock"] });
+      queryClient.invalidateQueries({
+        predicate: ({ queryKey }) => queryKey.includes("stock"),
+      });
       setStockName("");
       setStockCount("");
       setStockUnits("");

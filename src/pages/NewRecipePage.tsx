@@ -36,7 +36,9 @@ export default function NewRecipePage() {
       });
     },
     onSuccess() {
-      queryClient.invalidateQueries({ queryKey: ["recipes"] });
+      queryClient.invalidateQueries({
+        predicate: ({ queryKey }) => queryKey.includes("recipes"),
+      });
       navigate("../");
     },
     useErrorBoundary: (err) => !(err instanceof ZodError),

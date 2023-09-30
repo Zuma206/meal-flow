@@ -43,7 +43,9 @@ export default function FlowPage() {
       }
     },
     onSuccess() {
-      queryClient.invalidateQueries({ queryKey: ["days"] });
+      queryClient.invalidateQueries({
+        predicate: ({ queryKey }) => queryKey.includes("days"),
+      });
     },
   });
 
