@@ -1,3 +1,4 @@
+import Alert from "@/components/Alert";
 import Button from "@/components/Button";
 import Loader from "@/components/Loader";
 import Modal from "@/components/Modal";
@@ -5,7 +6,7 @@ import db, { select } from "@/lib";
 import { useStock } from "@/lib/queries";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { FiMinus, FiTrash } from "react-icons/fi";
+import { FiInbox, FiMinus, FiTrash } from "react-icons/fi";
 import { useNavigate, useParams } from "react-router-dom";
 
 export default function ViewRecipePage() {
@@ -70,6 +71,9 @@ export default function ViewRecipePage() {
             </Button>
           </div>
         </div>
+      )}
+      {stock.isSuccess && recipe.isSuccess && !recipe.data && (
+        <Alert icon={FiInbox} message="Recipe not found" />
       )}
     </>
   );
