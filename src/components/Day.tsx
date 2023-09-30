@@ -16,7 +16,7 @@ export default function Day(props: Props) {
 
   return (
     <Link
-      to={`/recipes/${props.day?.foreignKey}?day=${props.name}`}
+      to={recipe ? `/recipes/${props.day?.foreignKey}?day=${props.name}` : "#"}
       className="flex items-center justify-between gap-2 rounded-md bg-gray-100 p-2 shadow-md transition hover:brightness-90 active:brightness-75"
     >
       <span className="text-2xl font-bold">{props.name}</span>
