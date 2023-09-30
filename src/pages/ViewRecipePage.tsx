@@ -1,7 +1,7 @@
 import Button from "@/components/Button";
 import Loader from "@/components/Loader";
+import { useModal } from "@/components/Modal";
 import db, { select } from "@/lib";
-import { useModal } from "@/lib/modal-context";
 import { useStock } from "@/lib/queries";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { FiMinus, FiTrash } from "react-icons/fi";
@@ -27,19 +27,19 @@ export default function ViewRecipePage() {
       await db.recipes.delete(key);
     },
     onSuccess() {
-      deleteModal.close();
       queryClient.invalidateQueries({ queryKey: ["recipes"] });
       navigate("../");
     },
   });
-  const deleteModal = useModal(deleteRecipe, {
-    prompt: recipe.data
-      ? `Are you sure you want to delete '${recipe?.data?.name}'`
-      : undefined,
+
+  const deleteModal = useModal({
+    action: deleteRecipe,
+    prompt: `Are you sure you want to permanently delete '${recipe.data?.name}'?`,
   });
 
   return (
     <>
+      <deleteModal.Modal />
       {(recipe.isLoading || stock.isLoading) && <Loader />}
       {recipe.data && stock.isSuccess && (
         <div className="flex flex-col gap-4">

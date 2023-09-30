@@ -20,7 +20,7 @@ export default function RecipeButton(props: Props) {
             (index != 0 ? ", " : "") +
             requirement
           );
-        }),
+        }, ""),
     [props.recipe, props.stock],
   );
 
