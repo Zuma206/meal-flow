@@ -43,11 +43,15 @@ export default function IngredientResults(props: Props) {
       <Button key={ingredient.key} onClick={addIngredient(ingredient.key)}>
         <FiPlus /> {props.ingredientCount || 0} {ingredient.units} of{" "}
         <span className="flex">
-          {string
-            .split("$$$")
-            .map((part, index) =>
-              index % 2 === 1 ? <b key={index}>{part}</b> : part,
-            )}
+          {string.split("$$$").map((part, index) =>
+            index % 2 === 1 ? (
+              <span className="text-green-500" key={index}>
+                {part}
+              </span>
+            ) : (
+              part
+            ),
+          )}
         </span>
       </Button>
     ))

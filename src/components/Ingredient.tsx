@@ -13,11 +13,15 @@ export default function Ingredient(props: Props) {
     <tr className="border-b-2 border-b-gray-400">
       <TableData>
         <span className="flex">
-          {props.name
-            .split("$$$")
-            .map((part, index) =>
-              index % 2 === 1 ? <b key={index}>{part}</b> : part,
-            )}
+          {props.name.split("$$$").map((part, index) =>
+            index % 2 === 1 ? (
+              <span className="text-green-500" key={index}>
+                {part}
+              </span>
+            ) : (
+              part
+            ),
+          )}
         </span>
       </TableData>
       <TableData>{props.ingredient.count}</TableData>
