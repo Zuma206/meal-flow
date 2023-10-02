@@ -31,7 +31,8 @@ export default function IngredientOpts(props: Props) {
       if (typeof count == "string") return;
       await db.ingredients.update(
         {
-          count: count,
+          name,
+          count,
           units,
         },
         props.ingredient.key,
@@ -48,7 +49,8 @@ export default function IngredientOpts(props: Props) {
   const [editModal, setEditModal] = useState(false);
 
   const [count, setCount] = useState<string | number>(props.ingredient.count);
-  const [units, setUnits] = useState<string>(props.ingredient.units);
+  const [units, setUnits] = useState(props.ingredient.units);
+  const [name, setName] = useState(props.ingredient.name);
 
   return (
     <>
@@ -65,6 +67,7 @@ export default function IngredientOpts(props: Props) {
             <h3 className="text-2xl font-black">
               Editing &apos;{props.ingredient.name}&apos;
             </h3>
+            <InputField value={name} onChange={onStringChange(setName)} />
             <InputField
               type="number"
               step={0.1}
