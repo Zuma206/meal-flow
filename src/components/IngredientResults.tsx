@@ -3,6 +3,7 @@ import { OutputRecord } from "base-safe/dist/types";
 import Button from "./Button";
 import { FiPlus } from "react-icons/fi";
 import { Dispatch, SetStateAction } from "react";
+import { filter } from "fuzzy";
 
 type Props = {
   stock: OutputRecord<Ingredient>[];
@@ -34,19 +35,21 @@ export default function IngredientResults(props: Props) {
 
   return (
     props.ingredientSearch.length > 0 &&
-    props.stock
-      .filter(
-        (ingredient) =>
-          ingredient.name
-            .toLowerCase()
-            .startsWith(props.ingredientSearch.toLowerCase()) &&
-          !props.recipeReqs.find((req) => req.foreignKey == ingredient.key),
-      )
-      .map((ingredient) => (
-        <Button key={ingredient.key} onClick={addIngredient(ingredient.key)}>
-          <FiPlus /> {props.ingredientCount || 0} {ingredient.units} of{" "}
-          {ingredient.name}
-        </Button>
-      ))
+    filter(props.ingredientSearch, props.stock, {
+      extract: (stock) => stock.name,
+      pre: "$$$",
+      post: "$$$",
+    }).map(({ original: ingredient, string }) => (
+      <Button key={ingredient.key} onClick={addIngredient(ingredient.key)}>
+        <FiPlus /> {props.ingredientCount || 0} {ingredient.units} of{" "}
+        <span className="flex">
+          {string
+            .split("$$$")
+            .map((part, index) =>
+              index % 2 === 1 ? <b key={index}>{part}</b> : part,
+            )}
+        </span>
+      </Button>
+    ))
   );
 }
