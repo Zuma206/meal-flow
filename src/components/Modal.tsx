@@ -35,9 +35,9 @@ export default function Modal(props: Props) {
 
   return (
     props.show && (
-      <div className="absolute left-0 top-0 z-20 flex h-full w-full items-center justify-center bg-black bg-opacity-20">
+      <div className="animate-fadein absolute left-0 top-0 z-20 flex h-full w-full items-center justify-center bg-black bg-opacity-20">
         <MutationForm
-          className="flex flex-col items-center justify-center gap-4 rounded-lg bg-white px-20 py-10 outline outline-1 outline-gray-400"
+          className="animate-floatup flex flex-col items-center justify-center gap-4 rounded-lg bg-white px-20 py-10 outline outline-1 outline-gray-400"
           action={props.action}
         >
           {!props.prompt || typeof props.prompt == "string" ? (
