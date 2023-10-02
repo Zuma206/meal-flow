@@ -10,6 +10,7 @@ import db from "@/lib";
 import { onNumberChange, onStringChange } from "@/lib/binding";
 import { useStock } from "@/lib/queries";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { filter } from "fuzzy";
 import { useState } from "react";
 import { FiInbox, FiPlus } from "react-icons/fi";
 import { ZodError } from "zod";
@@ -77,8 +78,16 @@ export default function StockPage() {
           <div className="overflow-y-scroll">
             <table className="w-full">
               <tbody>
-                {stock.data.items.map((ingredient) => (
-                  <Ingredient key={ingredient.key} ingredient={ingredient} />
+                {filter(stockName, stock.data.items, {
+                  extract: (stock) => stock.name,
+                  pre: "$$$",
+                  post: "$$$",
+                }).map(({ original: ingredient, string }) => (
+                  <Ingredient
+                    key={ingredient.key}
+                    ingredient={ingredient}
+                    name={string}
+                  />
                 ))}
               </tbody>
             </table>
