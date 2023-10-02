@@ -5,12 +5,21 @@ import type { Ingredient } from "@/lib";
 
 type Props = {
   ingredient: OutputRecord<Ingredient>;
+  name: string;
 };
 
 export default function Ingredient(props: Props) {
   return (
     <tr className="border-b-2 border-b-gray-400">
-      <TableData>{props.ingredient.name}</TableData>
+      <TableData>
+        <span className="flex">
+          {props.name
+            .split("$$$")
+            .map((part, index) =>
+              index % 2 === 1 ? <b key={index}>{part}</b> : part,
+            )}
+        </span>
+      </TableData>
       <TableData>{props.ingredient.count}</TableData>
       <TableData>{props.ingredient.units}</TableData>
       <TableData>
