@@ -6,7 +6,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Modal from "./Modal";
 import { useState } from "react";
 import InputField from "./InputField";
-import { onNumberChange } from "@/lib/binding";
+import { onNumberChange, onStringChange } from "@/lib/binding";
 
 type Props = {
   ingredient: OutputRecord<Ingredient>;
@@ -32,6 +32,7 @@ export default function IngredientOpts(props: Props) {
       await db.ingredients.update(
         {
           count: count,
+          units,
         },
         props.ingredient.key,
       );
@@ -44,9 +45,10 @@ export default function IngredientOpts(props: Props) {
   });
 
   const [deleteModal, setDeleteModal] = useState(false);
-
   const [editModal, setEditModal] = useState(false);
+
   const [count, setCount] = useState<string | number>(props.ingredient.count);
+  const [units, setUnits] = useState<string>(props.ingredient.units);
 
   return (
     <>
@@ -59,12 +61,18 @@ export default function IngredientOpts(props: Props) {
       <Modal
         action={editCount}
         prompt={
-          <InputField
-            type="number"
-            step={0.1}
-            value={count}
-            onChange={onNumberChange(setCount)}
-          />
+          <div className="flex flex-col gap-2">
+            <h3 className="text-2xl font-black">
+              Editing &apos;{props.ingredient.name}&apos;
+            </h3>
+            <InputField
+              type="number"
+              step={0.1}
+              value={count}
+              onChange={onNumberChange(setCount)}
+            />
+            <InputField value={units} onChange={onStringChange(setUnits)} />
+          </div>
         }
         show={editModal}
         setShow={setEditModal}
