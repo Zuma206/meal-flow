@@ -79,6 +79,8 @@ export default function IngredientOpts(props: Props) {
         }
         show={editModal}
         setShow={setEditModal}
+        yes="Save"
+        no="Cancel"
       />
       <Button onClick={() => setEditModal(true)}>
         <FiEdit />
