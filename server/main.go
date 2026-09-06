@@ -10,6 +10,7 @@ import (
 
 func main() {
 	http.HandleFunc("GET /auth/redirect", auth.RedirectHandler)
+	http.HandleFunc("GET /auth/callback", auth.CallbackHandler)
 
 	fmt.Println("Starting server at", utils.Env.MealFlowAddr)
 	http.ListenAndServe(utils.Env.MealFlowAddr, nil)

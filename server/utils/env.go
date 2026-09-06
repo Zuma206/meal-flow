@@ -6,10 +6,11 @@ import (
 )
 
 var Env struct {
-	GoogleClientId string `env:"GOOGLE_CLIENT_ID,required"`
-	MealFlowAddr   string `env:"MEAL_FLOW_ADDR,required"`
-	MealFlowHost   string `env:"MEAL_FLOW_HOST,required"`
-	MealFlowDev    bool   `env:"MEAL_FLOW_DEV"`
+	GoogleClientSecret string `env:"GOOGLE_CLIENT_SECRET,required"`
+	GoogleClientId     string `env:"GOOGLE_CLIENT_ID,required"`
+	MealFlowAddr       string `env:"MEAL_FLOW_ADDR,required"`
+	MealFlowHost       string `env:"MEAL_FLOW_HOST,required"`
+	MealFlowDev        bool   `env:"MEAL_FLOW_DEV"`
 }
 
 func init() {

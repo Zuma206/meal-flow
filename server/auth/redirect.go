@@ -8,7 +8,7 @@ import (
 )
 
 var redirectUri = utils.PreferedHttpScheme() + "://" + utils.Env.MealFlowHost + "/auth/callback"
-var scope = "openid"
+var expectedScope = "openid"
 
 func RedirectHandler(w http.ResponseWriter, r *http.Request) {
 	// https://accounts.google.com/o/oauth2/v2/auth
@@ -21,7 +21,7 @@ func RedirectHandler(w http.ResponseWriter, r *http.Request) {
 			"prompt":        []string{"select_account"},
 			"redirect_uri":  []string{redirectUri},
 			"response_type": []string{"code"},
-			"scope":         []string{scope},
+			"scope":         []string{expectedScope},
 		}.Encode(),
 	}
 	http.Redirect(w, r, url.String(), http.StatusFound)
