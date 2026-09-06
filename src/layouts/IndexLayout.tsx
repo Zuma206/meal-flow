@@ -17,7 +17,7 @@ export default function IndexLayout(props: PropsWithChildren) {
   return (
     <QueryClientProvider client={queryClient}>
       <div className="flex h-screen w-full justify-center bg-gray-300 p-4">
-        <main className="grid h-full w-full max-w-2xl grid-rows-[1fr,5rem] gap-4">
+        <main className="grid h-full w-full max-w-2xl grid-rows-[1fr_5rem] gap-4">
           <Card padded>{props.children ? props.children : <Outlet />}</Card>
           <Card>
             <Navbar>
