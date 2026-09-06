@@ -1,3 +1,8 @@
+# Sensitive Env Files
+.env.development
+.env.dev
+.env
+
 # Logs
 logs
 *.log
