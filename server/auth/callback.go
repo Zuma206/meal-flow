@@ -1,27 +1,42 @@
 package auth
 
 import (
-	"bytes"
+	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
 	"net/url"
 	"os"
 
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/zuma206/meal-flow/server/utils"
 )
 
-func CallbackHandler(w http.ResponseWriter, r *http.Request) {
-	recievedScope := r.URL.Query().Get("scope")
-	code := r.URL.Query().Get("code")
-	if recievedScope != expectedScope {
-		http.Error(w, "invalid scope", http.StatusBadRequest)
-		return
+type exchangeRespBody struct {
+	IdToken string `json:"id_token"`
+}
+
+func verifySubject(idToken string) (string, error) {
+	claims := jwt.MapClaims{}
+	if _, _, err := jwt.NewParser().ParseUnverified(idToken, claims); err != nil {
+		return "", err
 	}
-	if code == "" {
-		http.Error(w, "missing code", http.StatusBadRequest)
-		return
+	sub, err := claims.GetSubject()
+	if err != nil {
+		return "", err
 	}
+	verifiedAny, ok := claims["email_verified"]
+	if !ok {
+		return "", fmt.Errorf("missing subject: email_verified")
+	}
+	verified, ok := verifiedAny.(bool)
+	if !(verified && ok) {
+		return "", fmt.Errorf("invalid email_verified type or value")
+	}
+	return sub, nil
+}
+
+func exchangeCode(code string) (string, error) {
 	resp, err := http.PostForm("https://oauth2.googleapis.com/token", url.Values{
 		"client_secret": []string{utils.Env.GoogleClientSecret},
 		"client_id":     []string{utils.Env.GoogleClientId},
@@ -30,15 +45,41 @@ func CallbackHandler(w http.ResponseWriter, r *http.Request) {
 		"code":          []string{code},
 	})
 	if err != nil {
-		http.Error(w, "code exchange failed", http.StatusInternalServerError)
-		fmt.Fprintln(os.Stderr, err.Error())
-		return
+		return "", err
 	}
 	defer resp.Body.Close()
-	var buffer bytes.Buffer
-	if _, err := io.Copy(&buffer, resp.Body); err != nil {
-		http.Error(w, "failed to read code exchange response", http.StatusInternalServerError)
-		return
+	decoder := json.NewDecoder(resp.Body)
+	body := &exchangeRespBody{}
+	if err := decoder.Decode(body); err != nil {
+		return "", err
 	}
-	fmt.Println(buffer.String())
+	return body.IdToken, nil
+}
+
+func callbackHandler(w http.ResponseWriter, r *http.Request) error {
+	recievedScope := r.URL.Query().Get("scope")
+	code := r.URL.Query().Get("code")
+	if recievedScope != expectedScope {
+		return fmt.Errorf("invalid scope: %s", recievedScope)
+	}
+	if code == "" {
+		return fmt.Errorf("missing code parameter")
+	}
+	idToken, err := exchangeCode(code)
+	if err != nil {
+		return fmt.Errorf("code exchange failed: %w", err)
+	}
+	sub, err := verifySubject(idToken)
+	if err != nil {
+		return err
+	}
+	_, err = io.WriteString(w, sub)
+	return err
+}
+
+func CallbackHandler(w http.ResponseWriter, r *http.Request) {
+	if err := callbackHandler(w, r); err != nil {
+		fmt.Fprintln(os.Stderr, r.URL.Path, "error:", err.Error())
+		http.Error(w, "internal server error", http.StatusInternalServerError)
+	}
 }
