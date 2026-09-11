@@ -1,7 +1,11 @@
 package utils
 
-func PreferedHttpScheme() string {
-	if Env.MealFlowDev {
+type PreferedHttpSchemeEnvironment interface {
+	GetMealFlowDev() bool
+}
+
+func PreferedHttpScheme(environment PreferedHttpSchemeEnvironment) string {
+	if environment.GetMealFlowDev() {
 		return "http"
 	}
 	return "https"

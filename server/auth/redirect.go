@@ -7,22 +7,37 @@ import (
 	"github.com/zuma206/meal-flow/server/utils"
 )
 
-var redirectUri = utils.PreferedHttpScheme() + "://" + utils.Env.MealFlowHost + "/auth/callback"
-var expectedScope = "email https://www.googleapis.com/auth/userinfo.email openid"
+const expectedScope = "email https://www.googleapis.com/auth/userinfo.email openid"
 
-func RedirectHandler(w http.ResponseWriter, r *http.Request) {
-	// https://accounts.google.com/o/oauth2/v2/auth
-	url := &url.URL{
-		Scheme: "https",
-		Host:   "accounts.google.com",
-		Path:   "/o/oauth2/v2/auth",
-		RawQuery: url.Values{
-			"client_id":     []string{utils.Env.GoogleClientId},
-			"prompt":        []string{"select_account"},
-			"redirect_uri":  []string{redirectUri},
-			"response_type": []string{"code"},
-			"scope":         []string{expectedScope},
-		}.Encode(),
+type getRedirectUriEnviron interface {
+	utils.PreferedHttpSchemeEnvironment
+	GetMealFlowAddr() string
+}
+
+func getRedirectUri(environ getRedirectUriEnviron) string {
+	return utils.PreferedHttpScheme(environ) + "://" + environ.GetMealFlowAddr() + "/auth/callback"
+}
+
+type RedirectHandlerEnviron interface {
+	getRedirectUriEnviron
+	GetGoogleClientId() string
+}
+
+func RedirectHandler(environ RedirectHandlerEnviron) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		// https://accounts.google.com/o/oauth2/v2/auth
+		url := &url.URL{
+			Scheme: "https",
+			Host:   "accounts.google.com",
+			Path:   "/o/oauth2/v2/auth",
+			RawQuery: url.Values{
+				"client_id":     []string{environ.GetGoogleClientId()},
+				"prompt":        []string{"select_account"},
+				"redirect_uri":  []string{getRedirectUri(environ)},
+				"response_type": []string{"code"},
+				"scope":         []string{expectedScope},
+			}.Encode(),
+		}
+		http.Redirect(w, r, url.String(), http.StatusFound)
 	}
-	http.Redirect(w, r, url.String(), http.StatusFound)
 }

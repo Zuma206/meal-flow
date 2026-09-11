@@ -9,7 +9,6 @@ import (
 	"os"
 
 	"github.com/golang-jwt/jwt/v5"
-	"github.com/zuma206/meal-flow/server/utils"
 )
 
 type exchangeRespBody struct {
@@ -36,12 +35,18 @@ func verifySubject(idToken string) (string, error) {
 	return sub, nil
 }
 
-func exchangeCode(code string) (string, error) {
+type exchangeCodeEnviron interface {
+	getRedirectUriEnviron
+	GetGoogleClientSecret() string
+	GetGoogleClientId() string
+}
+
+func exchangeCode(environ exchangeCodeEnviron, code string) (string, error) {
 	resp, err := http.PostForm("https://oauth2.googleapis.com/token", url.Values{
-		"client_secret": []string{utils.Env.GoogleClientSecret},
-		"client_id":     []string{utils.Env.GoogleClientId},
+		"client_secret": []string{environ.GetGoogleClientSecret()},
+		"client_id":     []string{environ.GetGoogleClientId()},
 		"grant_type":    []string{"authorization_code"},
-		"redirect_uri":  []string{redirectUri},
+		"redirect_uri":  []string{getRedirectUri(environ)},
 		"code":          []string{code},
 	})
 	if err != nil {
@@ -56,7 +61,7 @@ func exchangeCode(code string) (string, error) {
 	return body.IdToken, nil
 }
 
-func callbackHandler(w http.ResponseWriter, r *http.Request) error {
+func callbackHandler(environ CallbackHandlerEnviron, w http.ResponseWriter, r *http.Request) error {
 	recievedScope := r.URL.Query().Get("scope")
 	code := r.URL.Query().Get("code")
 	if recievedScope != expectedScope {
@@ -65,7 +70,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) error {
 	if code == "" {
 		return fmt.Errorf("missing code parameter")
 	}
-	idToken, err := exchangeCode(code)
+	idToken, err := exchangeCode(environ, code)
 	if err != nil {
 		return fmt.Errorf("code exchange failed: %w", err)
 	}
@@ -77,9 +82,15 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) error {
 	return err
 }
 
-func CallbackHandler(w http.ResponseWriter, r *http.Request) {
-	if err := callbackHandler(w, r); err != nil {
-		fmt.Fprintln(os.Stderr, r.URL.Path, "error:", err.Error())
-		http.Error(w, "internal server error", http.StatusInternalServerError)
+type CallbackHandlerEnviron interface {
+	exchangeCodeEnviron
+}
+
+func CallbackHandler(environ CallbackHandlerEnviron) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if err := callbackHandler(environ, w, r); err != nil {
+			fmt.Fprintln(os.Stderr, r.URL.Path, "error:", err.Error())
+			http.Error(w, "internal server error", http.StatusInternalServerError)
+		}
 	}
 }
