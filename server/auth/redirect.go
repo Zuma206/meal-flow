@@ -10,17 +10,17 @@ import (
 const expectedScope = "email https://www.googleapis.com/auth/userinfo.email openid"
 
 type getRedirectUriEnviron interface {
-	utils.PreferedHttpSchemeEnvironment
-	GetMealFlowAddr() string
+	utils.PreferedHttpSchemeEnviron
+	MealFlowAddr() string
 }
 
 func getRedirectUri(environ getRedirectUriEnviron) string {
-	return utils.PreferedHttpScheme(environ) + "://" + environ.GetMealFlowAddr() + "/auth/callback"
+	return utils.PreferedHttpScheme(environ) + "://" + environ.MealFlowAddr() + "/auth/callback"
 }
 
 type RedirectHandlerEnviron interface {
 	getRedirectUriEnviron
-	GetGoogleClientId() string
+	GoogleClientId() string
 }
 
 func RedirectHandler(environ RedirectHandlerEnviron) http.HandlerFunc {
@@ -31,7 +31,7 @@ func RedirectHandler(environ RedirectHandlerEnviron) http.HandlerFunc {
 			Host:   "accounts.google.com",
 			Path:   "/o/oauth2/v2/auth",
 			RawQuery: url.Values{
-				"client_id":     []string{environ.GetGoogleClientId()},
+				"client_id":     []string{environ.GoogleClientId()},
 				"prompt":        []string{"select_account"},
 				"redirect_uri":  []string{getRedirectUri(environ)},
 				"response_type": []string{"code"},

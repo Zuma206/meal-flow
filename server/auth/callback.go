@@ -37,14 +37,14 @@ func verifySubject(idToken string) (string, error) {
 
 type exchangeCodeEnviron interface {
 	getRedirectUriEnviron
-	GetGoogleClientSecret() string
-	GetGoogleClientId() string
+	GoogleClientSecret() string
+	GoogleClientId() string
 }
 
 func exchangeCode(environ exchangeCodeEnviron, code string) (string, error) {
 	resp, err := http.PostForm("https://oauth2.googleapis.com/token", url.Values{
-		"client_secret": []string{environ.GetGoogleClientSecret()},
-		"client_id":     []string{environ.GetGoogleClientId()},
+		"client_secret": []string{environ.GoogleClientSecret()},
+		"client_id":     []string{environ.GoogleClientId()},
 		"grant_type":    []string{"authorization_code"},
 		"redirect_uri":  []string{getRedirectUri(environ)},
 		"code":          []string{code},

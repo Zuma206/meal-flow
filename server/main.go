@@ -26,13 +26,13 @@ func run() error {
 	if err := godotenv.Load(); err != nil {
 		return err
 	}
-	environment, err := utils.NewEnviron()
+	environ, err := utils.NewEnviron()
 	if err != nil {
 		return err
 	}
-	mux := getServeMux(environment)
-	fmt.Println("Starting server at", "http://"+environment.GetMealFlowAddr())
-	return http.ListenAndServe(environment.GetMealFlowAddr(), mux)
+	mux := getServeMux(environ)
+	fmt.Println("Starting server at", "http://"+environ.MealFlowAddr())
+	return http.ListenAndServe(environ.MealFlowAddr(), mux)
 }
 
 func main() {
